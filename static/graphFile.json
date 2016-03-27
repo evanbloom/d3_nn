@@ -1,23 +1,23 @@
 {
     "nodes":[
-        {"name":"node1","group":1},
-        {"name":"node2","group":1},
-        {"name":"node3","group":1},
-        {"name":"node4","group":2},
-        {"name":"node5","group":2},
-        {"name":"node6","group":2},
-        {"name":"node7","group":3}
+        {"name":"node1","group":1, "x": 50, "y": 40},
+        {"name":"node2","group":1, "x": 50, "y": 140},
+        {"name":"node3","group":1, "x": 50, "y": 240},
+        {"name":"node4","group":2, "x": 150, "y": 40},
+        {"name":"node5","group":2, "x": 150, "y": 140},
+        {"name":"node6","group":2, "x": 150, "y": 240},
+        {"name":"node7","group":3, "x": 250, "y": 140}
     ],
     "links":[
-        {"source":0,"target":3,"weight":1},
-        {"source":1,"target":3,"weight":1},
-        {"source":2,"target":3,"weight":1},
-        {"source":0,"target":4,"weight":1},
-        {"source":1,"target":4,"weight":1},
-        {"source":2,"target":4,"weight":1},
-        {"source":3,"target":6,"weight":1},
-        {"source":4,"target":6,"weight":1},
-        {"source":5,"target":6,"weight":1}
+        {"source":0,"target":3,"weight": 15},
+        {"source":1,"target":3,"weight": 1},
+        {"source":2,"target":3,"weight": 24},
+        {"source":0,"target":4,"weight": 1},
+        {"source":1,"target":4,"weight": 1},
+        {"source":2,"target":4,"weight": 23},
+        {"source":3,"target":6,"weight": 1},
+        {"source":4,"target":6,"weight": 188},
+        {"source":5,"target":6,"weight": 1}
 
     ]
 }

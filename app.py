@@ -4,12 +4,10 @@ This file is part of the flask+d3 Hello World project.
 import json
 import flask
 import numpy as np
-
+from flask import request
 
 app = flask.Flask(__name__)
-
-
-@app.route("/")
+@app.route("/test/")
 def index():
     """
     When you request the root path, you'll get the index.html template.
@@ -17,11 +15,16 @@ def index():
     """
     return flask.render_template("index.html")
 
-@app.route("/network")
+@app.route("/", methods =['GET','POST'])
 def network():
+    if request.method == 'GET':
+        print  flask.request.args
     return flask.render_template("network.html")
 
 
+@app.route("/form_test")
+def form_test():
+    return flask.render_template("form_test.html")
 
 @app.route("/data")
 @app.route("/data/<int:ndata>")

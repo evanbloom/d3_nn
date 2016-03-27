@@ -1,0 +1,37 @@
+  <head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+</head>
+
+
+<form role="form" action="/wohoo" method="POST">
+  <label>Define Your Network</label>
+  <br>
+  <span>Input Layer</span>
+  <input type="text" name="input_layer" , placeholder="Number of Nodes">
+  <div class="multi-field-wrapper">
+    <div class="multi-fields">
+      <div class="multi-field">
+        <span>Hidden Layer</span>
+        <input type="text" name="hidden_layer" , placeholder="Number of Nodes">
+        <button type="button" class="remove-field">Remove</button>
+      </div>
+    </div>
+    <span>Output Layer</span>
+    <input type="text" name="output_layer" , placeholder="Number of Nodes">
+    <br>
+    <button type="button" class="add-field">Add Hidden Layer</button>
+  </div>
+</form>
+
+<script>
+$('.multi-field-wrapper').each(function() {
+  var $wrapper = $('.multi-fields', this);
+  $(".add-field", $(this)).click(function(e) {
+    $('.multi-field:first-child', $wrapper).clone(true).appendTo($wrapper).find('input').val('').focus();
+  });
+  $('.multi-field .remove-field', $wrapper).click(function() {
+    if ($('.multi-field', $wrapper).length > 1)
+      $(this).parent('.multi-field').remove();
+  });
+});
+</script>

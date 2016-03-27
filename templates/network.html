@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <script src="http://d3js.org/d3.v2.min.js?2.9.3"></script>
+<script src="http://code.jquery.com/jquery-1.6.2.min.js"></script> 
+<script src="d3.slider.js"></script>
 <style>
 
+
 .link {
-  stroke: #aaa;
+  stroke: #000;
+  stroke-width: 2px;
 }
 
 .node text {
@@ -13,15 +17,81 @@ cursos:pointer;
 }
 
 .node circle{
-#stroke:#333;
-#stroke-width:20px;
-r:3px;
-fill:#333;
+stroke:#000;
+stroke-width:1.5px;
+r:20px;
+fill:#ccc;
 }
 
+#slider3 {
+  margin: 20px 0 10px 20px;
+    width: 900px;
+    }
+
+
+
+
 </style>
-<body>
+
+
+
+
+<form role="form" name= "network"  method="get">
+<div id="input">
+    <p>
+        <label for="p_scnts"><input type="text" id="p_scnt" size="20" name="input_layer" value="" placeholder="Input Nodes" /></label>
+    </p>
+<form role="form" action="/network" method="POST">
+<div id="p_scents">
+    <p>
+        <label for="p_scnts"><input type="text" id="p_scnt" size="20" name="hidden_layer_1" value="" placeholder="Hidden_Nodes" /></label>
+    </p>
+</div>
+<div id="output">
+    <p>
+        <label for="p_scnts"><input type="text" id="p_scnt" size="20" name="output_layer" value="" placeholder="Output Nodes" /></label>
+    </p>
+<div><button type="button"href="#" id="addScnt">Add Hidden Layer</a></div>
+<input type="submit" value="Submit">
+</form>
+
 <script>
+
+$(function() {
+        var scntDiv = $('#p_scents');
+        var i = $('#p_scents p').size() + 1;
+        
+        $('#addScnt').live('click', function() {
+                $('<p><label for="p_scnts"><input type="text" id="p_scnt" size="20" name="hidden_layer' + i +'" value="" placeholder="Hidden Nodes" /></label> <a href="#" id="remScnt">Remove</a></p>').appendTo(scntDiv);
+                i++;
+                return false;
+        });
+        
+        $('#remScnt').live('click', function() { 
+                if( i > 2 ) {
+                        $(this).parents('p').remove();
+                        i--;
+                }
+                return false;
+        });
+});
+
+
+
+
+
+
+</script>
+</form>
+
+
+<body>
+
+<div id="slider3"></div>
+
+
+<script>
+
 
 var width = 960,
     height = 500
@@ -32,8 +102,8 @@ var svg = d3.select("body").append("svg")
 
 var force = d3.layout.force()
     .gravity(0)
-    .distance(200)
-    .charge(-100)
+    .distance(100)
+    .charge(0)
     .size([width, height]);
 
 d3.json("/static/graphFile.json", function(json) {
@@ -45,33 +115,76 @@ d3.json("/static/graphFile.json", function(json) {
 
   var link = svg.selectAll(".link")
       .data(json.links)
-    .enter().append("line")
+      .enter().append("line")
       .attr("class", "link")
-    .style("stroke-width", function(d) { return Math.sqrt(d.weight); });
+      .attr("x1", function(d) { return d.source.x; })
+      .attr("y1", function(d) { return d.source.y; })
+      .attr("x2", function(d) { return d.target.x; })
+      .attr("y2", function(d) { return d.target.y; });
+
+  var edgepaths = svg.selectAll(".edgepath")
+        .data(json.links)
+        .enter()
+        .append('path')
+        .attr({'d': function(d) {return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
+               'class':'edgepath',
+               'fill-opacity':0,
+               'stroke-opacity':0,
+               'fill':'blue',
+               'stroke':'red',
+               'id':function(d,i) {return 'edgepath'+i}})
+        .style("pointer-events", "none");
+
+    var edgelabels = svg.selectAll(".edgelabel")
+        .data(json.links)
+        .enter()
+        .append('text')
+        .style("pointer-events", "none")
+        .attr({'class':'edgelabel',
+               'id':function(d){return d.weight},
+               'dx':30,
+               'dy':5,
+               'font-size':14,
+               'fill':'#aaa'});
+
+    edgelabels.append('textPath')
+        .attr('xlink:href',function(d,i) {return '#edgepath'+i})
+        .style("pointer-events", "none")
+        .text(function(d){return d.weight});
+
+
+
 
   var node = svg.selectAll(".node")
       .data(json.nodes)
-    .enter().append("g")
+      .enter().append("g")
       .attr("class", "node")
-      .call(force.drag);
-
-  node.append("circle")
+      .attr("cx", function(d) {return d.x;})
+      .attr("cy", function(d) {return d.y;})
+      .attr("fixed", true)
+     
+      node.append("circle")
       .attr("r","5");
 
-  node.append("text")
+      node.append("text")
       .attr("dx", 12)
       .attr("dy", ".35em")
       .text(function(d) { return d.name });
 
-  force.on("tick", function() {
-    link.attr("x1", function(d) { return d.source.x; })
-        .attr("y1", function(d) { return d.source.y; })
-        .attr("x2", function(d) { return d.target.x; })
-        .attr("y2", function(d) { return d.target.y; });
+      node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; }); 
 
-    node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-  });
 });
 
-</script>
 
+var minDateUnix = moment('2014-07-01', "YYYY MM DD").unix();
+var maxDateUnix = moment('2015-07-21', "YYYY MM DD").unix();
+var secondsInDay = 60 * 60 * 24;
+
+d3.select('#slider3').call(d3.slider()
+  .axis(true).min(minDateUnix).max(maxDateUnix).step(secondsInDay)
+
+
+);
+      
+
+</script>
